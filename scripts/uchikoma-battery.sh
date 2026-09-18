@@ -37,6 +37,13 @@ pkill -x console-kit-daemon 2>/dev/null || true
 pkill -f "gvfs-gphoto2-volume-monitor" 2>/dev/null || true
 pkill -f "gvfs-afc-volume-monitor" 2>/dev/null || true
 pkill -f "gvfsd-trash" 2>/dev/null || true
+# NOT killing Thunar: it is now the default file manager daemon.
+
+# 5c. Ensure governor stays powersave (some sessions reset it to ondemand)
+sleep 10
+for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
+  sudo sh -c "echo powersave > '$cpu'" 2>/dev/null || true
+done
 
 # 6. Resume rescue after login
 sleep 5

@@ -9,7 +9,13 @@ for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
   sudo sh -c "echo powersave > '$cpu'" 2>/dev/null || true
 done
 
-# 2. Reduce wakeups from USB/ACPI devices (requires root)
+# 1b. Cap max CPU frequency to 1066 MHz to save battery
+for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do
+  sudo sh -c "echo 1066000 > '$cpu'" 2>/dev/null || true
+done
+
+# 1c. Enable kernel laptop mode
+sudo sysctl -w vm.laptop_mode=5 >/dev/null 2>&1 || true
 for dev in USB0 USB1 USB2 USB3 UHC1 UHC2 UHC3 UHC4 UHC5 UHC6 EHC1 EHC2; do
   grep -q "^$dev" /proc/acpi/wakeup 2>/dev/null && sudo sh -c "echo '$dev' > /proc/acpi/wakeup" 2>/dev/null || true
 done
@@ -39,11 +45,17 @@ pkill -f "gvfs-afc-volume-monitor" 2>/dev/null || true
 pkill -f "gvfsd-trash" 2>/dev/null || true
 # NOT killing Thunar: it is now the default file manager daemon.
 
-# 5c. Ensure governor stays powersave (some sessions reset it to ondemand)
+# 5c. Ensure governor stays powersave and max freq stays capped (some sessions reset it)
 sleep 10
 for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
   sudo sh -c "echo powersave > '$cpu'" 2>/dev/null || true
 done
+for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do
+  sudo sh -c "echo 1066000 > '$cpu'" 2>/dev/null || true
+done
+
+# 5d. Enable kernel laptop mode again after session startup
+sudo sysctl -w vm.laptop_mode=5 >/dev/null 2>&1 || true
 
 # 6. Resume rescue after login
 sleep 5

@@ -14,6 +14,13 @@ SERVICES_TO_DISABLE="
   avahi-dnsconfd
   nfs-common
   rpcbind
+  rsync
+  anacron
+  plymouth
+  plymouth-log
+  plymouth-splash
+  plymouth-stop
+  plymouth-upstart-bridge
 "
 
 for svc in $SERVICES_TO_DISABLE; do

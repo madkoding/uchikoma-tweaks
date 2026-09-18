@@ -34,11 +34,8 @@ xfdesktop --reload 2>/dev/null || true
 pkill -x xscreensaver 2>/dev/null || true
 pkill -x light-locker 2>/dev/null || true
 
-# Bring lxterminal if it was the only app
-if ! alive lxterminal && [ -f ~/.config/lxterminal/lxterminal.conf ]; then
-  rm -f /tmp/.lxterminal-socket:0.0-madkoding 2>/dev/null || true
-  setsid lxterminal >> "$LOG" 2>&1 &
-fi
+# NOT launching lxterminal: the user does not want it auto-starting.
+# (Previously this script opened lxterminal at every session start.)
 
 echo "resume rescue completed" >> "$LOG"
 date >> "$LOG"

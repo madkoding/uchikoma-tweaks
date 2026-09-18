@@ -14,8 +14,12 @@ for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do
   sudo sh -c "echo 1066000 > '$cpu'" 2>/dev/null || true
 done
 
-# 1c. Enable kernel laptop mode
-sudo sysctl -w vm.laptop_mode=5 >/dev/null 2>&1 || true
+# 1c. Laptop mode - DESACTIVADO por estabilidad
+# El laptop_mode=5 retrasa escrituras y aumenta riesgo de corrupcion si el
+# sistema se cuelga / apaga forzosamente (paso en Uchikoma 2026-09-18).
+# Se mantiene vm.laptop_mode=0 para evitar esos cuelgues.
+sudo sysctl -w vm.laptop_mode=0 >/dev/null 2>&1 || true
+
 for dev in USB0 USB1 USB2 USB3 UHC1 UHC2 UHC3 UHC4 UHC5 UHC6 EHC1 EHC2; do
   grep -q "^$dev" /proc/acpi/wakeup 2>/dev/null && sudo sh -c "echo '$dev' > /proc/acpi/wakeup" 2>/dev/null || true
 done
@@ -54,8 +58,8 @@ for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do
   sudo sh -c "echo 1066000 > '$cpu'" 2>/dev/null || true
 done
 
-# 5d. Enable kernel laptop mode again after session startup
-sudo sysctl -w vm.laptop_mode=5 >/dev/null 2>&1 || true
+# 5d. Laptop mode re-disable (algunas sesiones lo cambian)
+sudo sysctl -w vm.laptop_mode=0 >/dev/null 2>&1 || true
 
 # 6. Resume rescue after login
 sleep 5

@@ -1,0 +1,4 @@
+#!/bin/sh
+export DISPLAY=:0.0
+export XAUTHORITY=$HOME/.Xauthority
+exec $HOME/.local/lib/palemoon/palemoon "$@"

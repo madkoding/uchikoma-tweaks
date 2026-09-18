@@ -35,7 +35,7 @@ Ajustes de rendimiento, batería y rescate post-suspender para el Acer Aspire On
    sudo update-rc.d ondemand disable
    sudo sysctl -w vm.swappiness=10
    sudo update-rc.d rsync disable
-   sudo update-rc.d ntp disable
+   # ntp se mantiene habilitado para que el reloj no se desajuste
    ```
 
 4. Copiar los blockers de autostart:
@@ -62,5 +62,5 @@ Ajustes de rendimiento, batería y rescate post-suspender para el Acer Aspire On
 - No tocar servicios críticos: `networking`, `ssh`, `dbus`, `cron`, `slim`.
 - `console-kit-daemon` se mata por sesión; si alguna app lo necesita, puede fallar.
 - `x11vnc` se desactiva del boot; si se necesita, se puede reactivar con `sudo update-rc.d x11vnc enable`.
-- Desactivar `ntp` puede desajustar el reloj si no hay conectividad para sincronizar manualmente.
+- `rsync` se desactiva del boot; `ntp` se mantiene habilitado para sincronización de reloj.
 - `xfce4-power-manager` y `upowerd` se desactivan; la gestión de energía queda en `xset` y blank de pantalla.

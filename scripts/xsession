@@ -20,6 +20,13 @@ done
 
 # XFCE (startxfce4 levanta su propio dbus + sesion completa)
 if which startxfce4 > /dev/null 2>&1; then
+# DPMS / screen blanking
+export DISPLAY=:0.0
+export XAUTHORITY=$HOME/.Xauthority
+xset s 120 120
+xset +dpms
+xset dpms 300 600 900
+
     exec startxfce4
 fi
 

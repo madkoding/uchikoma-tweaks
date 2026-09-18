@@ -4,7 +4,7 @@ Ajustes de rendimiento, batería y rescate post-suspender para el Acer Aspire On
 
 ## Contenido
 
-- `scripts/uchikoma-battery.sh` — governor `powersave`, cap frecuencia CPU a 1066 MHz, `vm.laptop_mode=5`, USB autosuspend, blank 2 min, rescate gráfico, mata gvfs media monitors y console-kit.
+- `scripts/uchikoma-battery.sh` — governor `powersave`, cap frecuencia CPU a 1066 MHz, USB autosuspend, blank 2 min, rescate gráfico, mata gvfs media monitors y console-kit. **Nota:** `vm.laptop_mode=5` fue desactivado por provocar cuelgues/corrupción ante apagados forzosos. Se fuerza `vm.laptop_mode=0`.
 - `scripts/uchikoma-boot-optimize.sh` — desactiva servicios SysV innecesarios (rsync, anacron, plymouth, etc.).
 - `scripts/uchikoma-resume-rescue.sh` — relanza xfwm4/panel/xfdesktop si no están vivos.
 - `scripts/uchikoma-resolution.sh` — resolución virtual 1366x800 + DPI 72.
@@ -37,7 +37,9 @@ Ajustes de rendimiento, batería y rescate post-suspender para el Acer Aspire On
    sudo update-rc.d ondemand enable
    sudo sed -i 's/echo -n ondemand/echo -n powersave/g' /etc/init.d/ondemand
    sudo sysctl -w vm.swappiness=10
-   sudo sysctl -w vm.laptop_mode=5
+   # NOTA: laptop_mode=5 fue revertido por cuelgues; se mantiene en 0
+   # sudo sysctl -w vm.laptop_mode=5
+   sudo sysctl -w vm.laptop_mode=0
    sudo update-rc.d rsync disable
    sudo update-grub
    sudo apt-get remove --purge -y pcmanfm

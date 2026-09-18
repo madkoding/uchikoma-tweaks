@@ -1,0 +1,114 @@
+# ==========================================================================
+#  UCHIKOMA // HAIKU DESKBAR + TERMAL  —  conky 1.8.0 (Aspire One N270/i686)
+#
+#  Estilo: extension del panel XFCE (gris #D8D8D8, Exo 2, acento amarillo).
+#  Ventana OPACA: no requiere compositor (en este equipo el compositing va
+#  por software sobre vesafb y cuesta CPU/bateria).
+#
+#  Bugs reales de conky 1.8 en este equipo:
+#    - battery_bar roto -> se usa execbar con ~/scripts/conky-bat.sh
+#    - ${loadavg N} exige 1|2|3
+#    - las barras necesitan default_bar_size
+#    - hwmon 0 temp 1 funciona (acerhdf expone temp1_input)
+# ==========================================================================
+
+background yes
+update_interval 2.0
+total_run_times 0
+
+cpu_avg_samples 2
+net_avg_samples 2
+diskio_avg_samples 2
+
+use_xft yes
+xftfont Exo 2:size=7
+xftalpha 1
+
+override_utf8_locale yes
+imlib_cache_size 0
+double_buffer yes
+no_buffers yes
+text_buffer_size 1024
+max_user_text 8192
+short_units yes
+default_bar_size 140 5
+default_gauge_size 60 5
+top_cpu_separate no
+
+# ------------- ventana: gris exacto del panel, OPACA -----------------------
+own_window yes
+own_window_type normal
+own_window_transparent no
+own_window_argb_visual no
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_colour D8D8D8
+own_window_title conky_thermal
+
+border_inner_margin 6
+border_outer_margin 0
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders no
+
+# borde derecho pegado al borde izquierdo del panel (32 px)
+gap_x 32
+gap_y 10
+minimum_size 168 0
+maximum_width 168
+alignment top_right
+
+# --------------------------- paleta Haiku ---------------------------------
+default_color 1A1A1A
+default_shade_color FFFFFF
+default_outline_color 808080
+
+color1 FFCE00   # amarillo Haiku - acento / bateria / disco
+color2 2E8B9A   # teal - barras y red
+color3 7A7A7A   # gris medio - etiquetas
+color4 B0B0B0   # gris claro - separadores
+color5 5A5A5A   # gris oscuro - texto secundario
+color6 0A5C6B   # teal oscuro - valores de red
+color7 D94A4A   # rojo - temperatura alta
+
+TEXT
+
+${color}${font Exo 2:style=Bold:size=8}UCHIKOMA${font}${color3}${alignr}${font Exo 2:size=7}${time %H:%M}${font}
+${color4}──────────────────────────
+
+${color3}${font Exo 2:style=Bold:size=7}TERMAL${font}${alignr}${color3}${exec ~/scripts/conky-thermal.sh acerhdf}
+${color3}temp ${color}${exec ~/scripts/conky-thermal.sh temp}°C${alignr}${color3}${exec ~/scripts/conky-thermal.sh tempint}/100
+${color7}${execbar ~/scripts/conky-thermal.sh tempint}
+${color3}ventilador ${color}${exec ~/scripts/conky-thermal.sh fan}${alignr}${color3}modo ${color}${exec ~/scripts/conky-thermal.sh mode}
+${color3}umbral ${color}${exec ~/scripts/conky-thermal.sh trip}°C${alignr}${color3}hwmon ${color}${hwmon 0 temp 1}°C
+${color3}throttle ${color}${exec ~/scripts/conky-thermal.sh throttle}
+
+${color4}──────────────────────────
+${color3}CPU ${color}${cpu}%${alignr}${color3}${exec ~/scripts/conky-sys.sh curfreq}/${exec ~/scripts/conky-sys.sh maxfreq}MHz
+${color3}gov ${color}${exec ~/scripts/conky-sys.sh gov}
+${color2}${cpubar}
+${color3}carga ${color}${loadavg 1} ${loadavg 2} ${loadavg 3}
+${color3}tareas ${color}${exec ~/scripts/conky-sys.sh procs}${color3} · zombis ${color}${exec ~/scripts/conky-sys.sh zombies}
+${color2}${cpugraph 14,168 B8D8DE 2E8B9A}
+
+${color3}MEM ${color}${mem}${color3}/${memmax}${alignr}${color}${memperc}%
+${color2}${membar}
+${color3}SWP ${color}${swapperc}%${alignr}${swap}/${swapmax}
+
+${color4}──────────────────────────
+${color3}wlan0 ${color}${wireless_essid wlan0}
+${color3}▼ ${color}${downspeedf wlan0}${color3}kB/s ${alignr}▲ ${color}${upspeedf wlan0}${color3}kB/s
+${color2}${downspeedgraph wlan0 14,168 C9E4CE 3E8E4E}
+${color3}señal ${color}${wireless_link_qual_perc wlan0}%${alignr}${color3}${addr wlan0}
+${color3}total ${color}▼${totaldown wlan0} ${alignr}▲${totalup wlan0}
+
+${color4}──────────────────────────
+${color3}BAT ${color}${exec ~/scripts/conky-bat.sh pct}%${alignr}${color1}${exec ~/scripts/conky-bat.sh state}
+${color1}${execbar ~/scripts/conky-bat.sh pct}
+${color3}volt ${color}${exec ~/scripts/conky-bat.sh volt}V${alignr}${color3}${exec ~/scripts/conky-bat.sh ac}
+${color3}sda1 ${color}${exec ~/scripts/conky-disk.sh free}${color3} libre${alignr}${color}${exec ~/scripts/conky-disk.sh pct}%
+${color1}${execbar ~/scripts/conky-disk.sh usedpct}
+
+${color4}──────────────────────────
+${color3}uptime ${color}${uptime}${alignr}${color3}${kernel}
+${color1}${time %a %d %b}

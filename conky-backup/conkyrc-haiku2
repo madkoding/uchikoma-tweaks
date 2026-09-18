@@ -1,0 +1,105 @@
+# ==========================================================================
+#  UCHIKOMA // HAIKU DESKBAR  —  conky 1.8.0 (Aspire One N270 / i686)
+#
+#  Objetivo: que se lea como una extension del panel de XFCE.
+#    - Fondo #D8D8D8 = color EXACTO del panel (medido en pantalla).
+#    - Borde derecho alineado al borde izquierdo del panel (x=992 -> gap_x=32).
+#    - Tipografia Exo 2, la fuente Haiku que ya usa el escritorio.
+#    - Paleta Haiku: gris claro, texto negro, amarillo #FFCE00 de acento.
+#
+#  Notas de plataforma (bugs reales de conky 1.8 en este equipo):
+#    - battery_bar roto: toma el 1er argumento como nº de bateria.
+#      -> se usa ~/.conky-bat.sh con execbar.
+#    - ${loadavg N} exige 1|2|3 (no es opcional).
+#    - Las barras necesitan default_bar_size o ignoran su tamaño.
+# ==========================================================================
+
+background yes
+update_interval 2.0
+total_run_times 0
+
+cpu_avg_samples 2
+net_avg_samples 2
+diskio_avg_samples 2
+
+use_xft yes
+xftfont Exo 2:size=6
+xftalpha 1
+
+override_utf8_locale yes
+imlib_cache_size 0
+double_buffer yes
+no_buffers yes
+text_buffer_size 512
+max_user_text 8192
+short_units yes
+default_bar_size 128 4
+default_gauge_size 60 4
+top_cpu_separate no
+
+# ------------- ventana: gris del panel, apenas translucida ----------------
+own_window yes
+own_window_type normal
+own_window_transparent no
+own_window_argb_visual yes
+own_window_argb_value 240
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_colour D8D8D8
+
+border_inner_margin 4
+border_outer_margin 0
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders no
+
+# borde derecho del conky pegado al borde izquierdo del panel (32px)
+gap_x 32
+gap_y 10
+minimum_size 148 0
+maximum_width 148
+alignment top_right
+
+# --------------------------- paleta Haiku ---------------------------------
+default_color 1A1A1A   # texto principal (Haiku usa negro sobre gris claro)
+default_shade_color FFFFFF
+default_outline_color 808080
+
+color1 FFCE00   # amarillo Haiku - acento / bateria / disco
+color2 2E8B9A   # teal (colinas del fondo) - barras y red
+color3 7A7A7A   # gris medio - etiquetas
+color4 B0B0B0   # gris claro (selected_bg del tema) - separadores
+color5 5A5A5A   # gris oscuro - texto secundario
+color6 0A5C6B   # teal oscuro - valores de red
+
+TEXT
+
+${color}${font Exo 2:style=Bold:size=8}UCHIKOMA${font}${color3}${alignr}${font Exo 2:size=6}${time %H:%M}${font}
+${color4}──────────────────────────
+${color3}CPU ${color}${cpu}%${color3}${alignr}${freq_g}GHz ${execi 20 awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp}°C
+${color2}${cpubar}
+${color3}carga ${color}${loadavg 1} ${loadavg 2} ${loadavg 3}
+${color3}tareas ${color}${execi 5 ps -e --no-headers | wc -l}${color3} · hilos ${color}${execi 5 ps -eLf --no-headers | wc -l}
+${color2}${cpugraph 14,128 B8D8DE 2E8B9A}
+
+${color3}MEM ${color}${mem}${color3}/${memmax}${alignr}${memperc}%
+${color2}${membar}
+${color3}SWP ${color}${swapperc}%${alignr}${swap}/${swapmax}
+
+${color4}──────────────────────────
+${color3}wlan0 ${color}${wireless_essid wlan0}
+${color3}▼ ${color}${downspeedf wlan0}${color3}kB/s ${alignr}▲ ${color}${upspeedf wlan0}${color3}kB/s
+${color2}${downspeedgraph wlan0 14,128 C9E4CE 3E8E4E}
+${color3}señal ${color}${wireless_link_qual_perc wlan0}%${alignr}${color3}${addr wlan0}
+${color2}${wireless_link_bar wlan0}
+${color3}total ${color}▼${totaldown wlan0} ${alignr}▲${totalup wlan0}
+
+${color4}──────────────────────────
+${color3}BAT ${color}${execi 30 $HOME/.conky-bat.sh}%${alignr}${color1}${execi 30 $HOME/.conky-bat-state.sh}
+${color1}${execbar $HOME/.conky-bat.sh}
+${color3}sda1 ${color}${fs_free /} ${color3}libre${alignr}${color}${fs_used_perc /}%
+${color1}${fs_bar /}
+
+${color4}──────────────────────────
+${color3}uptime ${color}${uptime}${alignr}${color3}${kernel}
+${color1}${time %a %d %b}

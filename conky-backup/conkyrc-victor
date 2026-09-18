@@ -1,0 +1,69 @@
+#AUTHOR
+#https://github.com/Vict0rBit
+#t.me/victorbit
+#victormhgh@gmail.com
+#
+# --- Adaptado para Uchikoma (Aspire One N270 / Peppermint Natty, conky 1.8.0) ---
+#
+#  Cambios respecto al original (LinuxMedium), todos forzados por el hardware:
+#   1. own_window_type: desktop -> normal
+#      Con "desktop" el conky queda DETRAS del fondo de xfdesktop (invisible).
+#   2. own_window_transparent / argb_visual: yes -> no
+#      El compositor de xfwm4 4.8 NO expone _NET_WM_CM_S0 en este equipo
+#      (Xorg 1.10 + i915). Sin compositor, transparent/argb = rectangulo NEGRO.
+#      Se usa fondo opaco oscuro (141414) que respeta el diseno original.
+#   3. ${acpitemp} -> ~/scripts/conky-temp.sh
+#      No existe /proc/acpi/thermal_zone; el sensor es acerhdf en /sys
+#      (thermal_zone0/temp). ${acpitemp} daba error de scandir.
+#   4. Se agregan los stats que pidio el usuario: temp, ventilador, umbral,
+#      hwmon, bateria.
+#
+update_interval 2
+total_run_times 0
+net_avg_samples 1
+cpu_avg_samples 1
+imlib_cache_size 0
+double_buffer yes
+no_buffers yes
+use_xft yes
+xftfont Droid Sans:size=9
+override_utf8_locale yes
+text_buffer_size 2048
+own_window yes
+own_window_type normal
+own_window_transparent no
+own_window_argb_visual no
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_colour 141414
+alignment top_right
+gap_x 32
+gap_y 30
+minimum_size 280 0
+default_bar_size 30 8
+draw_shades no
+default_color ffffff
+default_shade_color 000000
+color0 00d9ff
+color1 ffffff
+color2 c5c5c5
+color3 ff8400
+
+TEXT
+${goto 210}${color0}${font Zekton:style=bold:size=13}${voffset 40}${exec whoami}
+${voffset -45}${font Zekton:style=Bold:size=12}${color}${goto 90}${uptime}
+${goto 90}${color1}${font Zekton:style=Bold:size=12}${color1}${sysname}${color}${font}
+${font Chinacat:size=12}${offset 70}${voffset 45}${time %B %d, %Y} ${goto 248}${font Zekton:style=bold:size=11}${exec ~/scripts/conky-temp.sh int}
+${goto 248}${font Zekton:style=bold:size=11}°C
+${voffset -11}${goto 65}${color3}${font Zekton:style=bold:size=30}${time %H:%M}${font}${color1}${goto 220}${font Zekton:style=Bold:size=11}CPU
+${goto 220}${font Zekton:style=Bold:size=11}${color1}${cpu cpu1}%
+${voffset 30}${goto 82}TERMAL
+${goto 82}${font Zekton:style=Bold:size=10}${exec ~/scripts/conky-temp.sh dec}°C
+${voffset 35}${goto 25}${font Zekton:style=Bold:size=10}${goto 113}acerhdf${font Zekton:style=Bold:size=11}${color1}${goto 217}RAM
+${goto 30}${font Zekton:style=Bold:size=9}${goto 120}${exec ~/scripts/conky-temp.sh fan}${goto 220}${font Zekton:style=Bold:size=11}${memperc}%
+${voffset 16}${font Zekton:style=Bold:size=11}${goto 83}ROOT${goto 175}SWAP
+${font Zekton:style=Bold:size=9}${goto 83}${fs_free /}${goto 175}${swapperc}%
+${font Zekton:style=Bold:size=10}${goto 25}${voffset 12}ventilador ${color3}${exec ~/scripts/conky-temp.sh fan}${color2} umbral ${color3}${exec ~/scripts/conky-temp.sh trip}°C
+${font Zekton:style=Bold:size=10}${goto 25}${voffset 5}bateria ${color3}${exec ~/scripts/conky-temp.sh bat}%${color2} ${exec ~/scripts/conky-temp.sh batstate}
+${font Zekton:style=Bold:size=10}${goto 25}${voffset 5}hwmon ${color3}${hwmon 0 temp 1}°C${color2} modo ${color3}${exec ~/scripts/conky-temp.sh mode}
+
+${image ~/.conky/victorConky/LinuxMedium.png -p 10,0}

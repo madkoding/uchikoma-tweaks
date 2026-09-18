@@ -1,0 +1,100 @@
+# ==========================================================================
+#  UCHIKOMA // Cyberpunk HUD v4 (COMPACTO)  —  conky 1.8.0 / i686
+#
+#  Escala reducida ~50% respecto a v3:
+#    ancho 250->132 · barras 244->120 · grafos 24->12 · titulo 12->9
+#    fuentes 8->7 y 7->6 (el minimo legible en 1024x600)
+#
+#  Requiere: ~/.conky-bat.sh (bateria; battery_bar del 1.8 esta roto)
+#  Transparencia REAL: own_window_argb_visual + compositing xfwm4.
+#  Notas: ${loadavg N} exige 1|2|3. Las barras necesitan default_bar_size.
+# ==========================================================================
+
+background yes
+update_interval 1.0
+total_run_times 0
+
+cpu_avg_samples 2
+net_avg_samples 2
+diskio_avg_samples 2
+
+use_xft yes
+xftfont FiraCode Nerd Font:size=7
+xftalpha 1
+
+override_utf8_locale yes
+imlib_cache_size 0
+double_buffer yes
+no_buffers yes
+text_buffer_size 512
+max_user_text 8192
+short_units yes
+default_bar_size 118 3
+default_gauge_size 60 3
+
+# ------------------------- transparencia real -----------------------------
+own_window yes
+own_window_type normal
+own_window_transparent yes
+own_window_argb_visual yes
+own_window_argb_value 150
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_colour 000000
+
+border_inner_margin 1
+border_outer_margin 0
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders no
+
+gap_x 44
+gap_y 8
+minimum_size 134 0
+maximum_width 134
+alignment top_right
+
+# ------------------------------ paleta neon -------------------------------
+default_color E8F6FF
+default_shade_color 000000
+default_outline_color 000000
+
+color0 00E5FF   # cian    - primario / CPU / rejilla
+color1 FF2E97   # magenta - red subida / alertas
+color2 7DFF6B   # verde   - red bajada / OK
+color3 FFCC00   # ambar   - temperatura / bateria
+color4 9B5DE5   # violeta - etiquetas
+color5 5A6C7A   # gris    - texto tenue
+color6 FFFFFF   # blanco  - valores
+
+TEXT
+
+${color0}${font FiraCode Nerd Font:style=Bold:size=9}UCHIKOMA${font}${color5}${alignr}${font FiraCode Nerd Font:size=6}${nodename}${font}${color}
+${color0}${font FiraCode Nerd Font:size=6}━━━━━━━━━━━━━━━━━━━━━━${font}${color}
+
+${color5}┃ ${color4}CPU ${color6}${cpu}%${alignr}${color0}${freq_g}G ${color3}${execi 20 awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp}°${color}
+${color0}${cpubar}
+${color5}┃ ${color4}carga ${color6}${loadavg 1} ${loadavg 2} ${loadavg 3}
+${color5}┃ ${color4}tareas ${color6}${execi 5 ps -e --no-headers | wc -l}${color5}·hilos ${color6}${execi 5 ps -eLf --no-headers | wc -l}${color}
+${color0}${cpugraph 12,118 12333a 00E5FF}
+
+${color5}┃ ${color4}MEM ${color6}${mem}${color5}/${color6}${memmax}${alignr}${color6}${memperc}%${color}
+${color0}${membar}
+${color5}┃ ${color4}SWP ${color6}${swapperc}%${alignr}${color6}${swap}${color5}/${color6}${swapmax}${color}
+
+${color0}${font FiraCode Nerd Font:size=6}━━━━━━━━━━━━━━━━━━━━━━${font}${color}
+${color5}┃ ${color2}NET ${color6}${wireless_essid wlan0}${color}
+${color5}┃ ${color2}▼${color6}${downspeedf wlan0}${color5}kB/s${alignr}${color1}▲${color6}${upspeedf wlan0}${color5}kB/s${color}
+${color0}${downspeedgraph wlan0 12,118 00352e 7DFF6B}
+${color5}┃ ${color4}señal ${color6}${wireless_link_qual_perc wlan0}%${alignr}${color4}ip ${color6}${addr wlan0}${color}
+${color0}${wireless_link_bar wlan0}
+${color5}┃ ${color4}total ${color2}▼${color6}${totaldown wlan0}${alignr}${color1}▲${color6}${totalup wlan0}${color}
+
+${color0}${font FiraCode Nerd Font:size=6}━━━━━━━━━━━━━━━━━━━━━━${font}${color}
+${color5}┃ ${color3}BAT ${color6}${execbar $HOME/.conky-bat.sh}%${alignr}${color4}${battery_short BAT1} ${color6}${fs_free /}${color5}libre${color}
+${color0}${execbar $HOME/.conky-bat.sh}
+${color0}${fs_bar /}
+${color5}┃ ${color4}up ${color6}${uptime_short}${alignr}${color4}${kernel}${color}
+
+${color0}${font FiraCode Nerd Font:size=6}━━━━━━━━━━━━━━━━━━━━━━${font}${color}
+${color0}${font FiraCode Nerd Font:style=Bold:size=9}${time %H:%M}${font}${alignr}${color5}${font FiraCode Nerd Font:size=6}${time %a %d %b}${font}${color}

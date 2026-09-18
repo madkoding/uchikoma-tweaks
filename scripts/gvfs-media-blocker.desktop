@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=GVFS media monitor blocker
+Exec=/bin/false
+Hidden=true
+NoDisplay=true
+X-GNOME-Autostart-enabled=false

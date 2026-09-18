@@ -32,6 +32,12 @@ xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-battery -n 
 pkill -x xscreensaver 2>/dev/null || true
 pkill -x light-locker 2>/dev/null || true
 
+# 5b. Kill memory-heavy daemons not needed in Uchikoma
+pkill -x console-kit-daemon 2>/dev/null || true
+pkill -f "gvfs-gphoto2-volume-monitor" 2>/dev/null || true
+pkill -f "gvfs-afc-volume-monitor" 2>/dev/null || true
+pkill -f "gvfsd-trash" 2>/dev/null || true
+
 # 6. Resume rescue after login
 sleep 5
 ~/scripts/uchikoma-resume-rescue.sh

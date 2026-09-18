@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Thunar daemon blocker
+Exec=/bin/false
+Hidden=true
+NoDisplay=true
+X-GNOME-Autostart-enabled=false

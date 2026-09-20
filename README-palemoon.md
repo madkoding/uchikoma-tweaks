@@ -12,4 +12,4 @@ Rutas:
 - Desktop: `/usr/share/applications/palemoon.desktop`
 - Default browser: `palemoon.desktop` para http/https/html
 
-Para reinstalar o actualizar, usar `~/scripts/install-palemoon.sh`.
+Para reinstalar o actualizar, usar `~/.scripts/install-palemoon.sh`.

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Uchikoma boot optimization - disable non-critical SysV services
-# Run once with: sudo -A /home/madkoding/scripts/uchikoma-boot-optimize.sh
+# Run once with: sudo -A /home/madkoding/.scripts/uchikoma-boot-optimize.sh
 
 set -e
 

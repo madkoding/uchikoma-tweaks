@@ -4,23 +4,23 @@ Ajustes de rendimiento, batería y rescate post-suspender para el Acer Aspire On
 
 ## Contenido
 
-- `scripts/uchikoma-battery.sh` — governor `powersave`, cap frecuencia CPU a 1066 MHz, USB autosuspend, blank 2 min, rescate gráfico, mata gvfs media monitors y console-kit. **Nota:** `vm.laptop_mode=5` fue desactivado por provocar cuelgues/corrupción ante apagados forzosos. Se fuerza `vm.laptop_mode=0`.
-- `scripts/uchikoma-boot-optimize.sh` — desactiva servicios SysV innecesarios (rsync, anacron, plymouth, etc.).
-- `scripts/uchikoma-resume-rescue.sh` — relanza xfwm4/panel/xfdesktop si no están vivos.
-- `scripts/uchikoma-resolution.sh` — resolución virtual 1366x800 + DPI 72.
-- `scripts/uchikoma-disable-x11vnc.sh` — desactiva x11vnc del boot si no se usa.
-- `scripts/uchikoma-wifi.sh` — script para apagar/encender WiFi (`on`, `off`, `toggle`).
-- `scripts/gvfs-media-blocker.desktop` — evita que gvfs cargue monitores de cámara/iPhone.
-- `scripts/thunar.desktop` — evita que Thunar se cargue como daemon.
-- `scripts/xsession` — archivo de sesión SLiM con hook de battery saver.
+- `.scripts/uchikoma-battery.sh` — governor `powersave`, cap frecuencia CPU a 1066 MHz, USB autosuspend, blank 2 min, rescate gráfico, mata gvfs media monitors y console-kit. **Nota:** `vm.laptop_mode=5` fue desactivado por provocar cuelgues/corrupción ante apagados forzosos. Se fuerza `vm.laptop_mode=0`.
+- `.scripts/uchikoma-boot-optimize.sh` — desactiva servicios SysV innecesarios (rsync, anacron, plymouth, etc.).
+- `.scripts/uchikoma-resume-rescue.sh` — relanza xfwm4/panel/xfdesktop si no están vivos.
+- `.scripts/uchikoma-resolution.sh` — resolución virtual 1366x800 + DPI 72.
+- `.scripts/uchikoma-disable-x11vnc.sh` — desactiva x11vnc del boot si no se usa.
+- `.scripts/uchikoma-wifi.sh` — script para apagar/encender WiFi (`on`, `off`, `toggle`).
+- `.scripts/gvfs-media-blocker.desktop` — evita que gvfs cargue monitores de cámara/iPhone.
+- `.scripts/thunar.desktop` — evita que Thunar se cargue como daemon.
+- `.scripts/xsession` — archivo de sesión SLiM con hook de battery saver.
 
 ## Uso
 
-1. Copiar todo a `~/scripts/` y el `xsession` al home:
+1. Copiar todo a `~/.scripts/` y el `xsession` al home:
    ```bash
-   cp -r scripts/* ~/scripts/
-   chmod +x ~/scripts/uchikoma-*.sh
-   cp ~/scripts/xsession ~/.xsession
+   cp -r scripts/* ~/.scripts/
+   chmod +x ~/.scripts/uchikoma-*.sh
+   cp ~/.scripts/xsession ~/.xsession
    chmod +x ~/.xsession
    ```
 
@@ -32,8 +32,8 @@ Ajustes de rendimiento, batería y rescate post-suspender para el Acer Aspire On
 
 3. Ejecutar una vez con sudo:
    ```bash
-   sudo /home/madkoding/scripts/uchikoma-boot-optimize.sh
-   sudo /home/madkoding/scripts/uchikoma-disable-x11vnc.sh
+   sudo /home/madkoding/.scripts/uchikoma-boot-optimize.sh
+   sudo /home/madkoding/.scripts/uchikoma-disable-x11vnc.sh
    sudo update-rc.d ondemand enable
    sudo sed -i 's/echo -n ondemand/echo -n powersave/g' /etc/init.d/ondemand
    sudo sysctl -w vm.swappiness=10
@@ -58,17 +58,17 @@ Ajustes de rendimiento, batería y rescate post-suspender para el Acer Aspire On
 
 6. Copiar los blockers de autostart:
    ```bash
-   cp ~/scripts/gvfs-media-blocker.desktop ~/.config/autostart/
+   cp ~/.scripts/gvfs-media-blocker.desktop ~/.config/autostart/
    rm -f ~/.config/autostart/thunar.desktop
    ```
 
 7. Para ahorrar batería, apagar WiFi cuando no se use:
    ```bash
-   ~/scripts/uchikoma-wifi.sh off
+   ~/.scripts/uchikoma-wifi.sh off
    ```
    Encender de nuevo:
    ```bash
-   ~/scripts/uchikoma-wifi.sh on
+   ~/.scripts/uchikoma-wifi.sh on
    ```
 
 8. Reiniciar sesión X.

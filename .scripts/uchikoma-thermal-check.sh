@@ -3,7 +3,7 @@
 # Reports CPU temperature, fan (acerhdf) state, thermal throttling,
 # disk errors, and the current battery/power settings.
 #
-# Usage: ~/scripts/uchikoma-thermal-check.sh
+# Usage: ~/.scripts/uchikoma-thermal-check.sh
 
 echo "=== Temperatura CPU ==="
 for z in /sys/class/thermal/thermal_zone*/; do

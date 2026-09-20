@@ -1,20 +1,16 @@
 #!/bin/bash
-# Uchikoma battery saver - applies per-login and persistent settings
+# Uchikoma battery/thermal saver - applies per-login settings
 # This script runs automatically from ~/.xsessionrc
 export DISPLAY=:0.0
 export XAUTHORITY=${XAUTHORITY:-$HOME/.Xauthority}
 
-# 1. CPU governor to conservative (sube gradualmente ante carga, baja en idle).
-# powersave se quedaba siempre a 800 MHz y causaba tirones con 512 MB de RAM.
-for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
-  sudo sh -c "echo conservative > '$cpu'" 2>/dev/null || true
-done
-
-# 1b. Cap max CPU frequency to 1333 MHz (balance bateria/fluidez).
-# Con ventilador kernelmode a 38C el sistema puede mantener 1333 MHz sin
-# sobrecalentarse. Antes estaba en 1066 MHz y causaba tirones visibles.
+# Underclock: cap max CPU frequency to 800 MHz to reduce heat.
+# Governor powersave keeps CPU at the lowest voltage/freq.
 for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do
-  sudo sh -c "echo 1333000 > '$cpu'" 2>/dev/null || true
+  sudo sh -c "echo 800000 > '$cpu'" 2>/dev/null || true
+done
+for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
+  sudo sh -c "echo powersave > '$cpu'" 2>/dev/null || true
 done
 
 # 1e. Swappiness: con solo 512 MB de RAM, 10 es demasiado bajo y fuerza OOM.
@@ -65,13 +61,13 @@ pkill -f "gvfs-afc-volume-monitor" 2>/dev/null || true
 pkill -f "gvfsd-trash" 2>/dev/null || true
 # NOT killing Thunar: it is now the default file manager daemon.
 
-# 5c. Ensure governor stays conservative and max freq stays capped (some sessions reset it)
+# 5c. Re-apply underclock after 10s (some sessions reset it)
 sleep 10
-for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
-  sudo sh -c "echo conservative > '$cpu'" 2>/dev/null || true
-done
 for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do
-  sudo sh -c "echo 1333000 > '$cpu'" 2>/dev/null || true
+  sudo sh -c "echo 800000 > '$cpu'" 2>/dev/null || true
+done
+for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
+  sudo sh -c "echo powersave > '$cpu'" 2>/dev/null || true
 done
 
 # 5d. Laptop mode re-disable (algunas sesiones lo cambian)

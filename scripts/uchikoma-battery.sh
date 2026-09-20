@@ -44,11 +44,19 @@ for f in /sys/bus/usb/devices/*/power/control; do
   sudo sh -c "echo auto > '$f'" 2>/dev/null || true
 done
 
-# 4. Reduce screen blank to 2 minutes (XFCE)
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac -n -t int -s 2 2>/dev/null || \
-  xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac -s 2 2>/dev/null || true
-xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-battery -n -t int -s 2 2>/dev/null || \
-  xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-battery -s 2 2>/dev/null || true
+# 4. Screen/DPMS timings (minutes) - aggressive for battery/thermal savings.
+# blank = screensaver-like blank, sleep = DPMS standby, off = DPMS off.
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac -n -t int -s 5 2>/dev/null || \
+  xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac -s 5 2>/dev/null || true
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-battery -n -t int -s 3 2>/dev/null || \
+  xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-battery -s 3 2>/dev/null || true
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-sleep -n -t int -s 10 2>/dev/null || \
+  xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-sleep -s 10 2>/dev/null || true
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-off -n -t int -s 15 2>/dev/null || \
+  xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-off -s 15 2>/dev/null || true
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-battery-sleep -n -t int -s 5 2>/dev/null || \
+  xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-battery-sleep -s 5 2>/dev/null || true
+# critical-power-action 3 = shutdown (no hibernate/suspend confiable); power-button 3 = ask.
 
 # 5. Ensure screensaver does not lock / steal focus
 pkill -x xscreensaver 2>/dev/null || true

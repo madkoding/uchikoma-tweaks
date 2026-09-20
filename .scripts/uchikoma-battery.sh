@@ -90,7 +90,7 @@ sudo sysctl -w vm.vfs_cache_pressure=500 >/dev/null 2>&1 || true
 
 # 6. Resume rescue after login
 sleep 5
-~/.scripts/uchikoma-resume-rescue.sh
+~/scripts/uchikoma-resume-rescue.sh
 
 # 8. Reduce GPU/redraw load: disable xfwm4 compositor, GTK event sounds,
 # smaller desktop icons, no menu images.

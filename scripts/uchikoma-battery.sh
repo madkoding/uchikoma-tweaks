@@ -92,8 +92,23 @@ sudo sysctl -w vm.vfs_cache_pressure=500 >/dev/null 2>&1 || true
 sleep 5
 ~/scripts/uchikoma-resume-rescue.sh
 
-# 7. Report
+# 8. Reduce GPU/redraw load: disable xfwm4 compositor, GTK event sounds,
+# smaller desktop icons, no menu images.
+xfconf-query -c xfwm4 -p /general/use_compositing -s false 2>/dev/null || true
+xfconf-query -c xsettings -p /Net/EnableEventSounds -n -t bool -s false 2>/dev/null || \
+  xfconf-query -c xsettings -p /Net/EnableEventSounds -s false 2>/dev/null || true
+xfconf-query -c xsettings -p /Net/EnableInputFeedbackSounds -n -t bool -s false 2>/dev/null || \
+  xfconf-query -c xsettings -p /Net/EnableInputFeedbackSounds -s false 2>/dev/null || true
+xfconf-query -c xsettings -p /Gtk/MenuImages -n -t bool -s false 2>/dev/null || \
+  xfconf-query -c xsettings -p /Gtk/MenuImages -s false 2>/dev/null || true
+xfconf-query -c xfce4-desktop -p /desktop-icons/font-size -n -t int -s 9 2>/dev/null || \
+  xfconf-query -c xfce4-desktop -p /desktop-icons/font-size -s 9 2>/dev/null || true
+xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -n -t int -s 36 2>/dev/null || \
+  xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -s 36 2>/dev/null || true
+
+# 9. Report
 echo "governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null)"
 echo "max_freq: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 2>/dev/null)"
 echo "swappiness: $(cat /proc/sys/vm/swappiness 2>/dev/null)"
 echo "temp: $(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null)"
+echo "compositor: $(xfconf-query -c xfwm4 -p /general/use_compositing 2>/dev/null)"
